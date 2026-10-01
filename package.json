@@ -9,7 +9,7 @@
   "author": "Julian Thoms",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "express": "^4.16.4",
+    "express": "^4.22.3",
     "express-session": "^1.15.6",
     "node-fetch": "^2.6.0",
     "pg": "^7.7.1",
