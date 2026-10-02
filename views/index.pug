@@ -1,10 +1,117 @@
-doctype html
-html(lang="en")
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1")
-    title Mars Weather
-    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous")
+extends layout
 
-  body
-    h1 NASA!
+block header
+  nav.units(aria-label="Temperature unit")
+    a(href=link({ unit: "c" }) aria-current=unit === "c" ? "true" : false) °C
+    a(href=link({ unit: "f" }) aria-current=unit === "f" ? "true" : false) °F
+
+block content
+  p.notice
+    | InSight stopped sending data in December 2022. NASA's feed still serves the last
+    | seven sols it received, #{date(sols[0].start)} to #{date(sols[sols.length - 1].end)}.
+
+  section.today(aria-labelledby="sol-heading")
+    .today-head
+      h2#sol-heading Sol #{selected.sol}
+      p.muted #{date(selected.start)} on Earth
+
+    if selected.temp
+      p.hero
+        span.hero-high= temp(selected.temp.max)
+        span.hero-sep /
+        span.hero-low= temp(selected.temp.min)
+
+    dl.facts
+      div
+        dt Average
+        dd= temp(selected.temp ? selected.temp.avg : null)
+      div
+        dt Pressure
+        if selected.pressure
+          dd #{num(selected.pressure.avg)} Pa
+            span.sub about #{num(selected.pressure.avg / 101325 * 100, 1)}% of Earth's at sea level
+        else
+          dd –
+      div
+        dt Wind
+        if selected.wind
+          dd #{num(selected.wind.avg, 1)} m/s
+            span.sub gusts up to #{num(selected.wind.max, 1)} m/s
+        else
+          dd –
+      div
+        dt Most common wind
+        dd= prevailing && prevailing.count ? prevailing.point : "–"
+      div
+        dt Season
+        dd.cap= selected.season || "–"
+          if selected.month
+            span.sub Mars month #{selected.month} of 12
+
+  .charts
+    section.panel.temp-panel
+      h3 Temperature, last seven sols
+      p.key
+        span.key-bar(aria-hidden="true")
+        | Low to high
+        span.key-avg(aria-hidden="true")
+        | Average
+      .scroll
+        svg.temp-chart(viewBox=`0 0 ${tempChart.width} ${tempChart.height}` role="img" aria-label="Daily temperature range for each sol. Values are listed in the table below.")
+          each t in tempChart.ticks
+            line.grid(x1=tempChart.pad.left x2=tempChart.width - tempChart.pad.right y1=t.y y2=t.y)
+            text.tick(x=tempChart.pad.left - 8 y=t.y dy="0.32em" text-anchor="end")= tick(t.value) + "°"
+          each b, i in tempChart.bars
+            - const s = sols[i]
+            a(href=link({ sol: b.sol }) class=b.sol === selected.sol ? "bar selected" : "bar" data-tip=s.temp ? `Sol ${s.sol} · high ${temp(s.temp.max)}, low ${temp(s.temp.min)}, average ${temp(s.temp.avg)}` : `Sol ${s.sol} · no temperature data`)
+              rect.hit(x=b.bandX y="0" width=b.band height=tempChart.height)
+              if b.height != null
+                rect.range(x=b.x y=b.top width=tempChart.barWidth height=b.height rx="4")
+                line.avg(x1=b.x x2=b.x + tempChart.barWidth y1=b.avgY y2=b.avgY)
+              text.sol-label(x=b.center y=tempChart.plotBottom + 18 text-anchor="middle")= b.sol
+              text.date-label(x=b.center y=tempChart.plotBottom + 34 text-anchor="middle")= shortDate(b.start)
+
+    section.panel.wind-panel
+      h3 Wind direction, sol #{selected.sol}
+      if rose.wedges.length
+        svg.rose(viewBox=`0 0 ${rose.size} ${rose.size}` role="img" aria-label=`Wind direction readings. Most common: ${prevailing.point}`)
+          each r in rose.rings
+            circle.grid(cx=rose.center cy=rose.center r=r)
+          each w in rose.wedges
+            path.wedge(d=w.path tabindex="0" data-tip=`${w.point} · ${Math.round(w.share * 100)}% of readings`)
+          each l in rose.labels
+            text.compass(x=l.x y=l.y dy="0.32em" text-anchor="middle")= l.text
+      else
+        p.muted No wind direction data for this sol.
+
+  section.panel
+    h3 All sols
+    .scroll
+      table
+        thead
+          tr
+            th(scope="col") Sol
+            th(scope="col") Earth date
+            th.num(scope="col") High
+            th.num(scope="col") Low
+            th.num(scope="col") Average
+            th.num(scope="col") Pressure
+            th.num(scope="col") Wind
+            th(scope="col") Season
+        tbody
+          each s in sols.slice().reverse()
+            tr(class=s.sol === selected.sol ? "selected" : null)
+              th(scope="row")
+                a(href=link({ sol: s.sol }))= s.sol
+              td= date(s.start)
+              td.num= temp(s.temp ? s.temp.max : null)
+              td.num= temp(s.temp ? s.temp.min : null)
+              td.num= temp(s.temp ? s.temp.avg : null)
+              td.num #{num(s.pressure ? s.pressure.avg : null)} Pa
+              td.num #{num(s.wind ? s.wind.avg : null, 1)} m/s
+              td.cap= s.season || "–"
+
+block footer
+  p.muted Last fetched from NASA #{fetchedAt.toISOString().slice(0, 16).replace("T", " ")} UTC.
+
+  script(src="/tooltip.js" defer)

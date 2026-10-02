@@ -1,0 +1,26 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title= title || "Mars Weather · Elysium Planitia"
+    link(rel="stylesheet" href="/style.css")
+
+  body
+    .page
+      header.masthead
+        p.kicker InSight lander · Elysium Planitia, Mars
+        h1
+          a(href="/") Mars Weather
+        block header
+
+      main
+        block content
+
+      footer.footer
+        p
+          | Data from the
+          |
+          a(href="https://api.nasa.gov/") NASA InSight Mars Weather Service API
+          | .
+        block footer

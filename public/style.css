@@ -1,0 +1,422 @@
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --rule: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.1);
+  --rust: #eb6834;
+  --link: #a8441b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --grid: #2c2c2a;
+    --rule: #383835;
+    --border: rgba(255, 255, 255, 0.1);
+    --rust: #d95926;
+    --link: #f08a5d;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+a {
+  color: var(--link);
+}
+
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+}
+
+.muted {
+  color: var(--ink-2);
+}
+
+.small {
+  font-size: 13px;
+}
+
+.cap {
+  text-transform: capitalize;
+}
+
+/* Header */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.masthead .kicker {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.masthead h1 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.masthead h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.units {
+  display: flex;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.units a {
+  padding: 4px 12px;
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.units a + a {
+  border-left: 1px solid var(--rule);
+}
+
+.units a[aria-current="true"] {
+  background: var(--ink);
+  color: var(--page);
+}
+
+.notice {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--rust);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 14px;
+}
+
+/* Selected sol */
+
+.today {
+  padding: 28px 0 8px;
+}
+
+.today-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+}
+
+.today-head h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.today-head p {
+  margin: 0;
+}
+
+.hero {
+  margin: 12px 0 0;
+  font-size: 64px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.hero-sep {
+  margin: 0 12px;
+  color: var(--rule);
+  font-weight: 400;
+}
+
+.hero-low {
+  color: var(--ink-2);
+}
+
+.hero + p {
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0;
+  margin: 28px 0 0;
+  border-top: 1px solid var(--rule);
+}
+
+.facts div {
+  padding: 12px 16px 12px 0;
+  border-bottom: 1px solid var(--grid);
+}
+
+.facts dt {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.facts dd {
+  margin: 2px 0 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.sub {
+  display: block;
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: none;
+}
+
+/* Panels & charts */
+
+.charts {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 20px;
+  margin-top: 28px;
+}
+
+.panel {
+  min-width: 0;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.charts + .panel {
+  margin-top: 20px;
+}
+
+.panel h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+.key {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.key-bar {
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--rust);
+}
+
+.key-avg {
+  width: 14px;
+  height: 2px;
+  margin-left: 12px;
+  background: var(--ink);
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.temp-chart {
+  min-width: 480px;
+}
+
+.grid {
+  fill: none;
+  stroke: var(--grid);
+  stroke-width: 1;
+}
+
+.tick,
+.date-label,
+.compass {
+  fill: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sol-label {
+  fill: var(--ink-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.bar .hit {
+  fill: transparent;
+}
+
+.bar .range {
+  fill: var(--rust);
+  opacity: 0.45;
+}
+
+.bar .avg {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.45;
+}
+
+.bar.selected .range,
+.bar.selected .avg,
+.bar:hover .range,
+.bar:hover .avg,
+.bar:focus-visible .range,
+.bar:focus-visible .avg {
+  opacity: 1;
+}
+
+.bar.selected .sol-label {
+  fill: var(--ink);
+}
+
+.bar:focus-visible {
+  outline: none;
+}
+
+.bar:focus-visible .hit {
+  fill: var(--grid);
+}
+
+.rose {
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.wedge {
+  fill: var(--rust);
+  stroke: var(--surface);
+  stroke-width: 1;
+}
+
+.wedge:hover,
+.wedge:focus-visible {
+  fill: var(--ink);
+  outline: none;
+}
+
+/* Table */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  padding: 8px 12px 8px 0;
+  text-align: left;
+  border-bottom: 1px solid var(--grid);
+  white-space: nowrap;
+}
+
+thead th {
+  color: var(--ink-2);
+  font-weight: 400;
+  font-size: 13px;
+  border-bottom-color: var(--rule);
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+tbody tr.selected {
+  background: var(--page);
+}
+
+tbody tr.selected th {
+  box-shadow: inset 3px 0 0 var(--rust);
+}
+
+tbody th {
+  padding-left: 12px;
+}
+
+/* Tooltip */
+
+.tooltip {
+  position: fixed;
+  z-index: 10;
+  max-width: 260px;
+  padding: 6px 10px;
+  background: var(--ink);
+  color: var(--page);
+  border-radius: 4px;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+/* Footer & error */
+
+.footer {
+  margin-top: 40px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.footer p {
+  margin: 4px 0;
+}
+
+.error {
+  padding: 40px 0;
+}
+
+@media (max-width: 760px) {
+  .charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero {
+    font-size: 48px;
+  }
+}
