@@ -1,50 +1,37 @@
 "use strict";
 
+const path = require("path");
 const express = require("express");
-const bodyParser = require("body-parser");
-const session = require("express-session");
-const fetch = require("node-fetch");
-
-
-const urlencodedParser = bodyParser.urlencoded({
-  extended: false
-});
 
 const PORT = 4000;
+// Personal key from https://api.nasa.gov; falls back to NASA's public, rate-limited DEMO_KEY
+const NASA_API_KEY = process.env.NASA_API_KEY || "DEMO_KEY";
+const INSIGHT_WEATHER_URL = `https://api.nasa.gov/insight_weather/?api_key=${NASA_API_KEY}&feedtype=json&ver=1.0`;
 
 const app = express();
-const api = "REMOVED";
 
-app.use(session({
-  secret: "REMOVED",
-  resave: true,
-  cookie: {
-    maxAge: 3600000
-  }, //time in millisecs before cookie expires
-  saveUninitialized: false
-}));
-
-
-//allowing CSS
-app.use(express.static(__dirname + '/public'));
-
-app.set("views", "views");
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
+// Static assets (CSS, images)
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", function(req, res) {
-  fetch("https://api.nasa.gov/insight_weather/?api_key=DEMO_KEY&feedtype=json&ver=1.0")
-  .then((response) => {
-    console.log(response);
-  })
-
+app.get("/", async (_req, res) => {
+  try {
+    const response = await fetch(INSIGHT_WEATHER_URL);
+    if (!response.ok) {
+      throw new Error(`NASA API responded with ${response.status}`);
+    }
+    const weather = await response.json();
+    console.log(weather);
+  } catch (err) {
+    console.error("Failed to fetch Mars weather:", err);
+  }
 
   res.render("index");
-
 });
 
-//END OF GET/POST
-
-app.listen(PORT, function() {
-  console.log(`Shopping App listening on Port ${PORT}`);
+app.listen(PORT, (err) => {
+  if (err) throw err;
+  console.log(`Mars Weather App listening on port ${PORT}`);
 });
